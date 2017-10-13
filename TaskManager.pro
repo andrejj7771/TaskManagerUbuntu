@@ -27,12 +27,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     qtask.cpp \
-    proclist.cpp
+    proclist.cpp \
+    finddialog.cpp
 
 HEADERS += \
         mainwindow.h \
     qtask.h \
-    proclist.h
+    proclist.h \
+    finddialog.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    finddialog.ui

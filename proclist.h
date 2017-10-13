@@ -21,7 +21,11 @@ public:
     explicit ProcList(QObject *parent = nullptr);
     ~ProcList();
 
+    void delFromList(int index);
+    QList<QTask*> getList();        //get process list
+
 public slots:
+    void killProcess(int pid);
     void readProcDir();             //read /proc/[PID]/status file
 
 private:

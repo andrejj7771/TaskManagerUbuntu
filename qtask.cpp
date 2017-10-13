@@ -34,10 +34,6 @@ void QTask::setCommand(QString command){
     _command = command;
 }
 
-bool QTask::killProcess(){
-    return kill(_pid, SIGKILL);
-}
-
 int QTask::pid(){
     return _pid;
 }
@@ -61,25 +57,22 @@ QString QTask::command(){
 }
 
 void QTask::checkCPU(){
-    int cputotal = getTotalCPU();
-    int cpuproc = getProcCPU(_pid);
+    float cputotal = getTotalCPU();
+    float cpuproc = getProcCPU();
     for (int i = 0; i < 1; i++){
-        int prev_cputotal = cputotal;
-        int prev_cpuproc = cpuproc;
+        float prev_cputotal = cputotal;
+        float prev_cpuproc = cpuproc;
         cputotal = getTotalCPU();
-        cpuproc = getProcCPU(_pid);
-        try{
-            float res = ((float)cpuproc - (float)prev_cpuproc) / ((float)cputotal - (float)prev_cputotal);
+        cpuproc = getProcCPU();
+        if ((cputotal - prev_cputotal) != 0){
+            float res = ((cpuproc - prev_cpuproc) / (cputotal - prev_cputotal)) * 500;
             setCPU(res);
-        }
-        catch (std::logic_error err){
-            setCPU(0.0f);
         }
     }
 }
-int QTask::getTotalCPU(){
+float QTask::getTotalCPU(){
     QFile file("/proc/stat");
-    int result = 0;
+    float result = 0;
     if (file.open(QIODevice::ReadOnly)){
         QTextStream stream(file.readAll());
         QString str = stream.readLine();
@@ -98,9 +91,9 @@ int QTask::getTotalCPU(){
         file.close();
     return result;
 }
-int QTask::getProcCPU(int pid){
-    QFile file("/proc/" + QString::number(pid) + "/stat");
-    int result = 0;
+float QTask::getProcCPU(){
+    QFile file("/proc/" + QString::number(_pid) + "/stat");
+    float result = 0;
     if (file.open(QIODevice::ReadOnly)){
         QTextStream stream(file.readAll());
         QString str = stream.readLine();

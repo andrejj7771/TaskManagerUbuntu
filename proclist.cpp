@@ -1,10 +1,4 @@
 #include "proclist.h"
-#include <QDebug>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pwd.h>
-#include <QFileInfo>
 
 ProcList::ProcList(QObject *parent) : QObject(parent)
 {
@@ -14,15 +8,15 @@ ProcList::~ProcList(){}
 void ProcList::readProcDir(){
     QDir dir("/proc");
     dir.setFilter(QDir::Dirs);
-    QFileInfoList FIL_loc = dir.entryInfoList();
-    for (auto it = FIL_loc.begin(); it != FIL_loc.end(); ++it){
-        QFileInfo IL(*it);
-        if (!FIL.contains(IL)){
-            FIL.append(IL);
+    FIL = dir.entryInfoList();
+//    for (auto it = FIL_loc.begin(); it != FIL_loc.end(); ++it){
+//        QFileInfo IL(*it);
+//        if (!FIL.contains(IL)){
+//            FIL.append(IL);
             for (int i = 0; i < FIL.size(); ++i) {
-                QTask *tmp_task = new QTask();
                 QFileInfo fileInfo = FIL.at(i);
                 if(fileInfo.fileName().toInt() >= 1){
+                    QTask *tmp_task = new QTask();
                     QFile tmp_file(fileInfo.filePath() + "/status");
                     if (tmp_file.open(QIODevice::ReadOnly)){
                         QTextStream stream(tmp_file.readAll(), QIODevice::ReadOnly);
@@ -38,7 +32,7 @@ void ProcList::readProcDir(){
                                 tmp_task->setCommand(arg);
                             else if (line.contains("State"))
                                 tmp_task->setState(arg);
-                            else if (line.contains("Pid"))
+                            else if (line.contains("Pid") && tmp_task->pid() == 0)
                                 tmp_task->setPid(arg.toInt());
                             else if (line.contains("Threads"))
                                 tmp_task->setThreads(arg.toInt());
@@ -51,16 +45,28 @@ void ProcList::readProcDir(){
                     }
                     if (tmp_file.isOpen())
                         tmp_file.close();
+                    tmp_task->checkCPU();
+                    _taskList.append(tmp_task);
                 }
-                _taskList.append(tmp_task);
             }
         }
-    }
-}
+//    }
+//}
 QString ProcList::getUserName(uint uid){
     register struct passwd *pwd;
     pwd = getpwuid(uid);
     if (pwd)
         return QString::fromStdString(pwd->pw_name);
     else return "";
+}
+
+QList<QTask*> ProcList::getList(){
+    return _taskList;
+}
+
+void ProcList::killProcess(int pid){
+    kill(pid, SIGKILL);
+}
+void ProcList::delFromList(int index){
+    _taskList.removeAt(index);
 }

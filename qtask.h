@@ -1,6 +1,7 @@
 #ifndef QTASK_H
 #define QTASK_H
 
+#include <sys/resource.h>
 #include <signal.h>
 
 #include <QTextStream>
@@ -39,16 +40,13 @@ private:
     float _cpu;         //used CPU resources
     int _pid;           //process id
     QString _command;   //run command
-    QString _state;     //state procces (Runnable, Sleet, etc)
+    QString _state;     //process state(Runnable, Sleep, etc)
     QString _user;      //user who ran a process
 
-    int getProcCPU(int pid);
-    int getTotalCPU();
+    float getProcCPU();
+    float getTotalCPU();
 
 signals:
-
-public slots:
-    bool killProcess();
 };
 
 #endif // QTASK_H
