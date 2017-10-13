@@ -3,9 +3,9 @@
 
 #include <signal.h>
 
-#include <QObject>
-#include <QDateTime>
 #include <QTextStream>
+#include <QDateTime>
+#include <QObject>
 #include <QFile>
 
 class QTask : public QObject
@@ -15,58 +15,40 @@ public:
     explicit QTask(QObject *parent = nullptr);
     ~QTask();
 
-    void setPid(int pid);
+    void setCommand(QString command);
     void setThreads(int threads);
-    void setPriority(int priority);
-    void setNice(short nice);
-    void setSize(int size);
-    void setRes(int res);
+    void setState(QString state);
+    void setUser(QString user);
     void setMem(float mem);
     void setCPU(float cpu);
-    void setTime(QDateTime time);
-    void setUser(QString user);
-    void setState(QString state);
-    void setCommand(QString command);
-    void setName(QString name);
+    void setPid(int pid);
 
-    bool killProcess();
-
-    int pid();
+    QString command();
+    QString state();
+    QString user();
     int threads();
-    int priority();
-    int size();
-    int res();
-    short nice();
     float mem();
     float cpu();
-    QDateTime time();
-    QString user();
-    QString state();
-    QString command();
+    int pid();
+
     void checkCPU();
 
 private:
-    int _pid; //+
-    int _threads; //+
-    int _priority;
-    int _size;
-    int _res;
-    short _nice;
-    float _mem;
-    float _cpu;
+    int _threads;       //threads quantity
+    float _mem;         //used memory
+    float _cpu;         //used CPU resources
+    int _pid;           //process id
+    QString _command;   //run command
+    QString _state;     //state procces (Runnable, Sleet, etc)
+    QString _user;      //user who ran a process
 
-    QDateTime _time;
-    QString _user; //+
-    QString _state; //+
-    QString _command; //+
-
-    int getTotalCPU();
     int getProcCPU(int pid);
-
+    int getTotalCPU();
 
 signals:
 
 public slots:
+    bool killProcess();
 };
 
 #endif // QTASK_H

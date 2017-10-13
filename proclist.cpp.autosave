@@ -1,10 +1,4 @@
 #include "proclist.h"
-#include <QDebug>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pwd.h>
-#include <QFileInfo>
 
 ProcList::ProcList(QObject *parent) : QObject(parent)
 {
