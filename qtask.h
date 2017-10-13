@@ -43,6 +43,7 @@ public:
     QString user();
     QString state();
     QString command();
+    void checkCPU();
 
 private:
     int _pid; //+
@@ -59,7 +60,6 @@ private:
     QString _state; //+
     QString _command; //+
 
-    void checkCPU();
     int getTotalCPU();
     int getProcCPU(int pid);
 

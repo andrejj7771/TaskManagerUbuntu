@@ -112,7 +112,6 @@ void QTask::checkCPU(){
         }
     }
 }
-
 int QTask::getTotalCPU(){
     QFile file("/proc/stat");
     int result = 0;

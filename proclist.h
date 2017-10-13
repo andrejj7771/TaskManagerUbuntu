@@ -18,6 +18,7 @@ public:
 
 private:
     QList<QTask> _taskList;
+    QFileInfoList FIL;
 
     QString getUserName(uint uid);
 
