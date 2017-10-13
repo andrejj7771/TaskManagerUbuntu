@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    qtask.cpp
+    qtask.cpp \
+    proclist.cpp
 
 HEADERS += \
         mainwindow.h \
-    qtask.h
+    qtask.h \
+    proclist.h
 
 FORMS += \
         mainwindow.ui

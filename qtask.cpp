@@ -94,3 +94,74 @@ QString QTask::state(){
 QString QTask::command(){
     return _command;
 }
+
+void QTask::checkCPU(){
+    int cputotal = getTotalCPU();
+    int cpuproc = getProcCPU(_pid);
+    for (int i = 0; i < 1; i++){
+        int prev_cputotal = cputotal;
+        int prev_cpuproc = cpuproc;
+        cputotal = getTotalCPU();
+        cpuproc = getProcCPU(_pid);
+        try{
+            float res = ((float)cpuproc - (float)prev_cpuproc) / ((float)cputotal - (float)prev_cputotal);
+            setCPU(res);
+        }
+        catch (std::logic_error err){
+            setCPU(0.0f);
+        }
+    }
+}
+
+int QTask::getTotalCPU(){
+    QFile file("/proc/stat");
+    int result = 0;
+    if (file.open(QIODevice::ReadOnly)){
+        QTextStream stream(file.readAll());
+        QString str = stream.readLine();
+        QString loc = "";
+        for (int i = 5; i < str.size(); i++){
+            if (str.at(i) == ' '){
+                result += loc.toInt();
+                loc = "";
+                i++;
+            }
+            else
+                loc += str.at(i);
+        }
+    }
+    if (file.isOpen())
+        file.close();
+    return result;
+}
+int QTask::getProcCPU(int pid){
+    QFile file("/proc/" + QString::number(pid) + "/stat");
+    int result = 0;
+    if (file.open(QIODevice::ReadOnly)){
+        QTextStream stream(file.readAll());
+        QString str = stream.readLine();
+        QString loc = "";
+        int i = 0;
+        int s_couner = 0;
+        while (s_couner != 13) {
+            if (str[i] == ' ')
+                s_couner++;
+            i++;
+        }
+        s_couner = 0;
+        while (s_couner != 2) {
+            if (str[i] == " "){
+                s_couner++;
+                result += loc.toInt();
+                loc = "";
+                i++;
+            }
+            loc += str[i];
+            i++;
+        }
+    }
+    if (file.isOpen())
+        file.close();
+    return result;
+}
+

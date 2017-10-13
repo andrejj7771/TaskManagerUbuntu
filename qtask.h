@@ -5,6 +5,8 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QTextStream>
+#include <QFile>
 
 class QTask : public QObject
 {
@@ -25,6 +27,7 @@ public:
     void setUser(QString user);
     void setState(QString state);
     void setCommand(QString command);
+    void setName(QString name);
 
     bool killProcess();
 
@@ -42,8 +45,8 @@ public:
     QString command();
 
 private:
-    int _pid;
-    int _threads;
+    int _pid; //+
+    int _threads; //+
     int _priority;
     int _size;
     int _res;
@@ -52,9 +55,13 @@ private:
     float _cpu;
 
     QDateTime _time;
-    QString _user;
-    QString _state;
-    QString _command;
+    QString _user; //+
+    QString _state; //+
+    QString _command; //+
+
+    void checkCPU();
+    int getTotalCPU();
+    int getProcCPU(int pid);
 
 
 signals:
