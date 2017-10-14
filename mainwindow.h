@@ -3,8 +3,10 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QShortcut>
 #include <QTimer>
 
+#include "finddialog.h"
 #include "proclist.h"
 
 namespace Ui {

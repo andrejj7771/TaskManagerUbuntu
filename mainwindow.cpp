@@ -9,6 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
     _processes.readProcDir();
     initTable();
 
+    QShortcut *sh_cut = new QShortcut(QKeySequence::Find, this);
+    //sh_cut.setKey(QKeySequence::Find);
+
     register struct passwd *pwd;
     pwd = getpwuid(getuid());
     if (pwd)
@@ -16,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->processTable, SIGNAL(cellClicked(int,int)), this, SLOT(selectedItem(int,int)));
     connect(ui->killPutton, SIGNAL(clicked(bool)), this, SLOT(killProcess()));
+    connect(sh_cut, SIGNAL(activated()), this, SLOT(showFindDialog()));
 }
 
 MainWindow::~MainWindow()
@@ -59,7 +63,7 @@ void MainWindow::killProcess(){
         if (_username != "root" && (item->text() != _username))
             QMessageBox::critical(this, "Error", "You don't have a rights to kill this process.");
         else if (_username == item->text() || _username == "root"){
-            //_processes.killProcess(pid);
+            _processes.killProcess(pid);
             ui->processTable->removeRow(_row);
             _processes.delFromList(_row);
             _row = -1;
@@ -68,3 +72,7 @@ void MainWindow::killProcess(){
     }
 }
 void MainWindow::newProcess(){}
+void MainWindow::showFindDialog(){
+    FindDialog *fd = new FindDialog(this, ui->processTable);
+    fd->show();
+}

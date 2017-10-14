@@ -59,7 +59,7 @@ QString QTask::command(){
 void QTask::checkCPU(){
     float cputotal = getTotalCPU();
     float cpuproc = getProcCPU();
-    for (int i = 0; i < 1; i++){
+    for (int i = 0; i < 10; i++){
         float prev_cputotal = cputotal;
         float prev_cpuproc = cpuproc;
         cputotal = getTotalCPU();

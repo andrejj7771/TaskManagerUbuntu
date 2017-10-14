@@ -22,14 +22,11 @@ FindDialog::~FindDialog()
 
 QTableWidget* FindDialog::find(){
     table->clearSelection();
-    QTableWidget *tmp = new QTableWidget();
-    if (!ui->lineEdit->text().isEmpty())
+    if (!ui->lineEdit->text().isEmpty()){
         for (int i = 0; i < table->rowCount(); i++)
-            if (table->item(i, ui->comboBox->currentIndex())->text().contains(ui->lineEdit->text())){
+            if (table->item(i, ui->comboBox->currentIndex())->text().contains(ui->lineEdit->text()))
                 table->selectRow(i);
-                //QModelIndex tmp = table->model()->index(i, ui->comboBox->currentIndex());
-                //table->selectionModel()->select(tmp, QItemSelectionModel::Select);
-            }
+    }
     else QMessageBox::warning(this, "Error", "Empty string");
     return table;
 }
