@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initTable();
 
     QShortcut *sh_cut = new QShortcut(QKeySequence::Find, this);
-    //sh_cut.setKey(QKeySequence::Find);
+    _updateTimer.start(2000);
 
     register struct passwd *pwd;
     pwd = getpwuid(getuid());
@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->processTable, SIGNAL(cellClicked(int,int)), this, SLOT(selectedItem(int,int)));
     connect(ui->killPutton, SIGNAL(clicked(bool)), this, SLOT(killProcess()));
+    connect(&_updateTimer, SIGNAL(timeout()), this, SLOT(updateProcessList()));
     connect(sh_cut, SIGNAL(activated()), this, SLOT(showFindDialog()));
 }
 
@@ -28,6 +29,13 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::initTable(){
+    ui->processTable->setColumnCount(6);
+    ui->processTable->setHorizontalHeaderItem(0, new QTableWidgetItem("PID"));
+    ui->processTable->setHorizontalHeaderItem(1, new QTableWidgetItem("User"));
+    ui->processTable->setHorizontalHeaderItem(2, new QTableWidgetItem("Threads"));
+    ui->processTable->setHorizontalHeaderItem(3, new QTableWidgetItem("MEM"));
+    ui->processTable->setHorizontalHeaderItem(4, new QTableWidgetItem("CPU"));
+    ui->processTable->setHorizontalHeaderItem(5, new QTableWidgetItem("Command"));
     QList<QTask*> list_loc = _processes.getList();
     for (auto it = list_loc.begin(); it != list_loc.end(); ++it){
         initRow(ui->processTable->rowCount() - 1, *it);
@@ -75,4 +83,10 @@ void MainWindow::newProcess(){}
 void MainWindow::showFindDialog(){
     FindDialog *fd = new FindDialog(this, ui->processTable);
     fd->show();
+}
+void MainWindow::updateProcessList(){
+    ui->processTable->clear();
+    ui->processTable->setRowCount(0);
+    _processes.readProcDir();
+    initTable();
 }

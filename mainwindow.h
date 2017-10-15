@@ -22,6 +22,7 @@ public:
     ~MainWindow();
 
 private:
+    QTimer _updateTimer;
     ProcList _processes;
     Ui::MainWindow *ui;
     QString _username;
@@ -34,6 +35,7 @@ private:
 
 private slots:
     void selectedItem(int r, int c);
+    void updateProcessList();
     void showFindDialog();
     void killProcess();
     void newProcess();

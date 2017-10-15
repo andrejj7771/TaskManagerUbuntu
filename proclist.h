@@ -22,6 +22,7 @@ public:
     ~ProcList();
 
     void delFromList(int index);
+    void checkClosedProcess();      //check processes which was closed without TaskManager
     QList<QTask*> getList();        //get process list
 
 public slots:
@@ -30,7 +31,7 @@ public slots:
 
 private:
     QList<QTask*> _taskList;        //process list
-    QFileInfoList FIL;              // /proc/[PID]/ directories
+    QFileInfoList _FIL;              // /proc/[PID]/ directories
 
     QString getUserName(uint uid);  //get Username by userID
 

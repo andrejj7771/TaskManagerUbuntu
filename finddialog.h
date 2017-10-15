@@ -1,11 +1,11 @@
 #ifndef FINDDIALOG_H
 #define FINDDIALOG_H
 
-#include <QDialog>
-#include <QTableWidget>
 #include <QTableWidgetItem>
+#include <QTableWidget>
 #include <QMessageBox>
 #include <QModelIndex>
+#include <QDialog>
 
 namespace Ui {
 class FindDialog;
@@ -23,8 +23,8 @@ public:
     ~FindDialog();
 
 private:
-    Ui::FindDialog *ui;
     QTableWidget *table;
+    Ui::FindDialog *ui;
 
     void addToCB();
 

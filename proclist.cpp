@@ -6,14 +6,16 @@ ProcList::ProcList(QObject *parent) : QObject(parent)
 ProcList::~ProcList(){}
 
 void ProcList::readProcDir(){
+    //checkClosedProcess();
     QDir dir("/proc");
     dir.setFilter(QDir::Dirs);
     QFileInfoList FIL_loc = dir.entryInfoList();
     for (auto it = FIL_loc.begin(); it != FIL_loc.end(); ++it){
-        QFileInfo IL(*it);
-        if (!FIL.contains(IL) && IL.fileName().toInt() >= 1){
+        QFileInfo FI(*it);
+        if (!_FIL.contains(FI) && FI.fileName().toInt() >= 1){
+            _FIL.append(FI);
             QTask *tmp_task = new QTask();
-            QFile tmp_file(IL.filePath() + "/status");
+            QFile tmp_file(FI.filePath() + "/status");
             if (tmp_file.open(QIODevice::ReadOnly)){
                 QTextStream stream(tmp_file.readAll(), QIODevice::ReadOnly);
                 while(!stream.atEnd()){
@@ -61,5 +63,18 @@ void ProcList::killProcess(int pid){
     kill(pid, SIGKILL);
 }
 void ProcList::delFromList(int index){
-    _taskList.removeAt(index);
+    _taskList.removeAt(index + 1);
+    _FIL.removeAt(index + 1);
+}
+void ProcList::checkClosedProcess(){
+    QDir dir("/proc");
+    dir.setFilter(QDir::Dirs);
+    QFileInfoList FIL_loc = dir.entryInfoList();
+    int i = 0;
+    for (auto it = _FIL.begin(); it != _FIL.end(); ++it, i++){
+        if (!FIL_loc.contains(*it)){
+            _FIL.removeAt(i);
+            _taskList.removeAt(i - 2); // cause first dirs are "." and "..". This dirs aren't contained into _taskList
+        }
+    }
 }
